@@ -6,25 +6,30 @@ class ControladorMemoriaCRUD:
         self.datos = []
 
     def _validar_datos(self, registro: dict):
-        """Valida campos vacíos y reglas de negocio específicas."""
-        # 1. Validación general: Ningún campo puede quedar vacío
+        # 1. Campos vacíos
         for clave, valor in registro.items():
             if not valor:
                 raise ValueError(f"El campo '{clave}' no puede estar vacío.")
 
-        # 2. Validación: DNI (al menos 7 números y solo dígitos)
+        # 2. DNI: solo números y al menos 7 dígitos
         if "dni" in registro:
             dni = registro["dni"].strip()
             if not dni.isdigit() or len(dni) < 7:
                 raise ValueError("El DNI debe contener únicamente números y tener al menos 7 dígitos.")
 
-        # 3. Validación: Nombre Completo (al menos dos palabras)
+        # 3. Nombre: al menos dos palabras
         if "nombre" in registro:
             palabras = [p for p in registro["nombre"].strip().split() if p]
             if len(palabras) < 2:
                 raise ValueError("El Nombre Completo debe contener al menos dos palabras (nombre y apellido).")
 
-        # 4. Validación: Correo Electrónico (debe incluir '@' y '.com')
+        # 4. Teléfono: solo números
+        if "telefono" in registro:
+            telefono = registro["telefono"].strip()
+            if not telefono.isdigit():
+                raise ValueError("El Teléfono debe contener únicamente números.")
+
+        # 5. Correo: contener @ y terminar en .com
         if "email" in registro:
             email = registro["email"].strip().lower()
             if "@" not in email or not email.endswith(".com"):
@@ -33,7 +38,6 @@ class ControladorMemoriaCRUD:
     def crear(self, registro: dict):
         self._validar_datos(registro)
 
-        # Validación: Evitar duplicados por clave primaria
         valor_clave = registro.get(self.clave_primaria)
         if any(item[self.clave_primaria] == valor_clave for item in self.datos):
             raise ValueError(f"Ya existe un registro con {self.clave_primaria} = {valor_clave}.")
