@@ -11,25 +11,33 @@ class ControladorMemoriaCRUD:
             if not valor:
                 raise ValueError(f"El campo '{clave}' no puede estar vacío.")
 
-        # 2. DNI: solo números y al menos 7 dígitos
+        # 2. Vehículos - Año: solo números y 4 dígitos
+        if "anio" in registro:
+            anio = registro["anio"].strip()
+            if not anio.isdigit():
+                raise ValueError("El Año del vehículo debe contener únicamente números.")
+            if len(anio) != 4:
+                raise ValueError("El Año del vehículo debe tener exactamente 4 dígitos (ej: 2022).")
+
+        # 3. Propietarios - DNI: solo números y al menos 7 dígitos
         if "dni" in registro:
             dni = registro["dni"].strip()
             if not dni.isdigit() or len(dni) < 7:
                 raise ValueError("El DNI debe contener únicamente números y tener al menos 7 dígitos.")
 
-        # 3. Nombre: al menos dos palabras
+        # 4. Propietarios - Nombre: al menos dos palabras
         if "nombre" in registro:
             palabras = [p for p in registro["nombre"].strip().split() if p]
             if len(palabras) < 2:
                 raise ValueError("El Nombre Completo debe contener al menos dos palabras (nombre y apellido).")
 
-        # 4. Teléfono: solo números
+        # 5. Propietarios - Teléfono: solo números
         if "telefono" in registro:
             telefono = registro["telefono"].strip()
             if not telefono.isdigit():
                 raise ValueError("El Teléfono debe contener únicamente números.")
 
-        # 5. Correo: contener @ y terminar en .com
+        # 6. Propietarios - Correo: contener @ y terminar en .com
         if "email" in registro:
             email = registro["email"].strip().lower()
             if "@" not in email or not email.endswith(".com"):
